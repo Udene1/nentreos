@@ -68,7 +68,7 @@ export async function extractIndustry(description: string): Promise<{ industry: 
  * Get AI client based on provider preference
  */
 function getAIClient(settings?: { aiProvider?: string; groqApiKey?: string; openaiApiKey?: string; xaiApiKey?: string; geminiApiKey?: string }) {
-    let provider = settings?.aiProvider || process.env.AI_PROVIDER || 'groq';
+    let provider = settings?.aiProvider || process.env.AI_PROVIDER || 'gemini';
     const groqKey = (settings?.groqApiKey && settings.groqApiKey.length > 0) ? settings.groqApiKey : process.env.GROQ_API_KEY;
     const xaiKey = (settings?.xaiApiKey && settings.xaiApiKey.length > 0) ? settings.xaiApiKey : process.env.XAI_API_KEY;
 
@@ -276,7 +276,7 @@ If you suggest any other payment method, ensure the link above is prominent.`;
             });
             response = completion.choices[0]?.message?.content || '';
         } else if (provider === 'gemini') {
-            const model = (aiClient as GoogleGenerativeAI).getGenerativeModel({ model: 'gemini-2.5-flash-lite' });
+            const model = (aiClient as GoogleGenerativeAI).getGenerativeModel({ model: 'gemini-1.5-flash' });
             const result = await model.generateContent(prompt + "\n\nRespond with ONLY valid JSON.");
             response = result.response.text();
 
@@ -452,7 +452,7 @@ Example format: ["Insight 1", "Insight 2", "Insight 3"]`;
             });
             response = completion.choices[0]?.message?.content || '[]';
         } else if (provider === 'gemini') {
-            const model = (aiClient as GoogleGenerativeAI).getGenerativeModel({ model: 'gemini-2.5-flash-lite' });
+            const model = (aiClient as GoogleGenerativeAI).getGenerativeModel({ model: 'gemini-1.5-flash' });
             const result = await model.generateContent(prompt + "\n\nRespond with ONLY valid JSON array.");
             response = result.response.text();
 
@@ -532,7 +532,7 @@ Respond in JSON ONLY:
             });
             response = completion.choices[0]?.message?.content || '{}';
         } else if (provider === 'gemini') {
-            const model = (aiClient as GoogleGenerativeAI).getGenerativeModel({ model: 'gemini-2.5-flash-lite' });
+            const model = (aiClient as GoogleGenerativeAI).getGenerativeModel({ model: 'gemini-1.5-flash' });
             const result = await model.generateContent(prompt + "\n\nRespond with ONLY valid JSON.");
             response = result.response.text();
             response = response.replace(/^```json\n|\n```$/g, '').trim();
