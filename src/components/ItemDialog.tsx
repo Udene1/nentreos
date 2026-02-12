@@ -1,0 +1,241 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import {
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    Button,
+    TextField,
+    Box,
+    Typography,
+    CircularProgress
+} from '@mui/material';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { itemSchema, ItemFormValues } from '@/lib/validations';
+import { createClient } from '@/lib/supabase-client';
+import toast from 'react-hot-toast';
+import BarcodeScanner from '@/components/BarcodeScanner';
+import { Scan as ScanIcon } from 'lucide-react';
+
+interface ItemDialogProps {
+    open: boolean;
+    onClose: () => void;
+    item?: any; // If provided, we are editing
+    onSuccess: () => void;
+}
+
+export default function ItemDialog({ open, onClose, item, onSuccess }: ItemDialogProps) {
+    const [loading, setLoading] = useState(false);
+    const [scanning, setScanning] = useState(false);
+    const [barcodeEnabled, setBarcodeEnabled] = useState(true);
+    const supabase = createClient();
+
+    const {
+        register,
+        handleSubmit,
+        setValue,
+        formState: { errors },
+        reset,
+    } = useForm<ItemFormValues>({
+        resolver: zodResolver(itemSchema),
+        defaultValues: item ? {
+            name: item.name,
+            description: item.description || '',
+            price: Number(item.price),
+            barcode: item.barcode || '',
+            category: item.category || '',
+            quantity: item.quantity,
+            base_unit: item.base_unit || 'Piece',
+            packaging_unit: item.packaging_unit || '',
+            units_per_package: item.units_per_package || 1,
+        } : {
+            name: '',
+            description: '',
+            price: 0,
+            barcode: '',
+            category: '',
+            quantity: 0,
+            base_unit: 'Piece',
+            packaging_unit: '',
+            units_per_package: 1,
+        },
+    });
+
+    useEffect(() => {
+        if (open) {
+            const fetchSettings = async () => {
+                const { data: { user } } = await supabase.auth.getUser();
+                if (!user) return;
+
+                const { data } = await supabase
+                    .from('settings')
+                    .select('barcode_enabled')
+                    .eq('user_id', user.id)
+                    .single();
+
+                if (data) {
+                    setBarcodeEnabled(data.barcode_enabled ?? true);
+                }
+            };
+            fetchSettings();
+        }
+    }, [open, supabase]);
+
+    const onSubmit = async (values: ItemFormValues) => {
+        setLoading(true);
+        try {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) throw new Error('Not authenticated');
+
+            if (item) {
+                const { error } = await supabase
+                    .from('items')
+                    .update({
+                        ...values,
+                        updated_at: new Date().toISOString(),
+                    })
+                    .eq('id', item.id);
+                if (error) throw error;
+                toast.success('Item updated successfully');
+            } else {
+                const { error } = await supabase
+                    .from('items')
+                    .insert([{
+                        ...values,
+                        user_id: user.id,
+                    }]);
+                if (error) throw error;
+                toast.success('Item added successfully');
+            }
+            reset();
+            onSuccess();
+            onClose();
+        } catch (error: any) {
+            toast.error(error.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
+            <form onSubmit={handleSubmit(onSubmit)}>
+                <DialogTitle>{item ? 'Edit Item' : 'Add New Item'}</DialogTitle>
+                <DialogContent>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
+                        <TextField
+                            label="Item Name"
+                            fullWidth
+                            {...register('name')}
+                            error={!!errors.name}
+                            helperText={errors.name?.message}
+                        />
+                        {barcodeEnabled && (
+                            <Box sx={{ display: 'flex', gap: 1, alignItems: 'flex-start' }}>
+                                <TextField
+                                    label="Barcode / SKU"
+                                    fullWidth
+                                    {...register('barcode')}
+                                    error={!!errors.barcode}
+                                    helperText={errors.barcode?.message}
+                                />
+                                <Button
+                                    variant="outlined"
+                                    onClick={() => setScanning(!scanning)}
+                                    sx={{ height: 56, minWidth: 56 }}
+                                >
+                                    <ScanIcon size={20} />
+                                </Button>
+                            </Box>
+                        )}
+
+                        {scanning && (
+                            <BarcodeScanner
+                                onDetected={(code) => {
+                                    setValue('barcode', code);
+                                    setScanning(false);
+                                    toast.success(`Barcode detected: ${code}`);
+                                }}
+                                onClose={() => setScanning(false)}
+                            />
+                        )}
+
+                        <TextField
+                            label="Category"
+                            fullWidth
+                            {...register('category')}
+                            error={!!errors.category}
+                            helperText={errors.category?.message}
+                        />
+
+                        <Box sx={{ display: 'flex', gap: 2 }}>
+                            <TextField
+                                label="Base Unit (e.g. Bottle, Piece)"
+                                fullWidth
+                                {...register('base_unit')}
+                                error={!!errors.base_unit}
+                                helperText={errors.base_unit?.message}
+                            />
+                            <TextField
+                                label="Pkg Unit (e.g. Crate, Carton)"
+                                fullWidth
+                                {...register('packaging_unit')}
+                                error={!!errors.packaging_unit}
+                                helperText={errors.packaging_unit?.message}
+                            />
+                        </Box>
+
+                        <TextField
+                            label="Units per Package (Conversion Factor)"
+                            type="number"
+                            fullWidth
+                            {...register('units_per_package', { valueAsNumber: true })}
+                            error={!!errors.units_per_package}
+                            helperText={errors.units_per_package?.message || "How many base units are in one package?"}
+                        />
+                        <TextField
+                            label="Price (₦)"
+                            type="number"
+                            fullWidth
+                            {...register('price', { valueAsNumber: true })}
+                            error={!!errors.price}
+                            helperText={errors.price?.message}
+                        />
+                        {!item && (
+                            <TextField
+                                label="Initial Quantity"
+                                type="number"
+                                fullWidth
+                                {...register('quantity', { valueAsNumber: true })}
+                                error={!!errors.quantity}
+                                helperText={errors.quantity?.message}
+                            />
+                        )}
+                        <TextField
+                            label="Description"
+                            multiline
+                            rows={3}
+                            fullWidth
+                            {...register('description')}
+                            error={!!errors.description}
+                            helperText={errors.description?.message}
+                        />
+                    </Box>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={onClose}>Cancel</Button>
+                    <Button
+                        variant="contained"
+                        type="submit"
+                        disabled={loading}
+                    >
+                        {loading ? <CircularProgress size={24} /> : (item ? 'Update' : 'Add')}
+                    </Button>
+                </DialogActions>
+            </form>
+        </Dialog>
+    );
+}
