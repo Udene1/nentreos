@@ -17,7 +17,8 @@ import {
     TextField,
     Divider
 } from '@mui/material';
-import { SmartToy as AIIcon, Send as SendIcon } from '@mui/icons-material';
+import AIIcon from '@mui/icons-material/SmartToy';
+import SendIcon from '@mui/icons-material/Send';
 import { generateReminder } from '@/lib/ai';
 import { createClient } from '@/lib/supabase-client';
 import toast from 'react-hot-toast';

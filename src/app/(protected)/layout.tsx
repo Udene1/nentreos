@@ -19,19 +19,17 @@ import {
     MenuItem,
     Tooltip,
 } from '@mui/material';
-import {
-    Menu as MenuIcon,
-    Dashboard as DashboardIcon,
-    Inventory as InventoryIcon,
-    ShoppingBag as SalesIcon,
-    AddShoppingCart as PurchasesIcon,
-    BarChart as ReportsIcon,
-    Settings as SettingsIcon,
-    Logout as LogoutIcon,
-    Person as PersonIcon,
-    People as ClientsIcon,
-    SmartToy as AIIcon,
-} from '@mui/icons-material';
+import MenuIcon from '@mui/icons-material/Menu';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import InventoryIcon from '@mui/icons-material/Inventory';
+import SalesIcon from '@mui/icons-material/ShoppingBag';
+import PurchasesIcon from '@mui/icons-material/AddShoppingCart';
+import ReportsIcon from '@mui/icons-material/BarChart';
+import SettingsIcon from '@mui/icons-material/Settings';
+import LogoutIcon from '@mui/icons-material/Logout';
+import PersonIcon from '@mui/icons-material/Person';
+import ClientsIcon from '@mui/icons-material/People';
+import AIIcon from '@mui/icons-material/SmartToy';
 import { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { createClient } from '@/lib/supabase-client';

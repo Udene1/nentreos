@@ -13,14 +13,12 @@ import {
     IconButton,
     Tooltip
 } from '@mui/material';
-import {
-    Lightbulb,
-    TrendingUp,
-    Inventory,
-    AccountBalanceWallet,
-    Refresh,
-    ChevronRight
-} from '@mui/icons-material';
+import Lightbulb from '@mui/icons-material/Lightbulb';
+import TrendingUp from '@mui/icons-material/TrendingUp';
+import Inventory from '@mui/icons-material/Inventory';
+import AccountBalanceWallet from '@mui/icons-material/AccountBalanceWallet';
+import Refresh from '@mui/icons-material/Refresh';
+import ChevronRight from '@mui/icons-material/ChevronRight';
 import { generateBusinessAdvice } from '@/lib/ai';
 
 interface AIAdvisorProps {

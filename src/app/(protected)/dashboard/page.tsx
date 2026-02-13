@@ -17,15 +17,13 @@ import {
     Skeleton,
     Stack
 } from '@mui/material';
-import {
-    TrendingUp,
-    Inventory,
-    Warning,
-    Receipt,
-    SmartToy as AIIcon,
-    AccountBalanceWallet as WalletIcon,
-    Assessment as TaxIcon
-} from '@mui/icons-material';
+import TrendingUp from '@mui/icons-material/TrendingUp';
+import Inventory from '@mui/icons-material/Inventory';
+import Warning from '@mui/icons-material/Warning';
+import Receipt from '@mui/icons-material/Receipt';
+import AIIcon from '@mui/icons-material/SmartToy';
+import WalletIcon from '@mui/icons-material/AccountBalanceWallet';
+import TaxIcon from '@mui/icons-material/Assessment';
 import { createClient } from '@/lib/supabase-client';
 import { useRole } from '@/hooks/useRole';
 import AIAdvisor from '@/components/AIAdvisor';
