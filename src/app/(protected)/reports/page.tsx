@@ -185,19 +185,19 @@ export default function ReportsPage() {
             </Box>
 
             <Grid container spacing={3} sx={{ mb: 4 }}>
-                <Grid item xs={12} sm={6} md={3}>
+                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                     <Paper sx={{ p: 3, borderTop: '4px solid', borderTopColor: 'primary.main', height: '100%' }}>
                         <Typography variant="body2" color="text.secondary" gutterBottom>Gross Revenue</Typography>
                         <Typography variant="h5" fontWeight="bold">{formatCurrency(totalRevenue)}</Typography>
                     </Paper>
                 </Grid>
-                <Grid item xs={12} sm={6} md={3}>
+                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                     <Paper sx={{ p: 3, borderTop: '4px solid', borderTopColor: 'success.main', height: '100%' }}>
                         <Typography variant="body2" color="text.secondary" gutterBottom>Gross Profit</Typography>
                         <Typography variant="h5" fontWeight="bold" color="success.main">{formatCurrency(grossProfit)}</Typography>
                     </Paper>
                 </Grid>
-                <Grid item xs={12} sm={6} md={3}>
+                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                     <Paper sx={{ p: 3, borderTop: '4px solid', borderTopColor: 'warning.main', height: '100%', bgcolor: 'warning.light', color: 'warning.contrastText' }}>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
                             <TaxIcon fontSize="small" />
@@ -207,7 +207,7 @@ export default function ReportsPage() {
                         <Typography variant="caption" sx={{ opacity: 0.8 }}>FIRS Standard 7.5%</Typography>
                     </Paper>
                 </Grid>
-                <Grid item xs={12} sm={6} md={3}>
+                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                     <Paper sx={{ p: 3, borderTop: '4px solid', borderTopColor: 'info.main', height: '100%' }}>
                         <Typography variant="body2" color="text.secondary" gutterBottom>Active Inventory Value</Typography>
                         <Typography variant="h5" fontWeight="bold">
@@ -218,7 +218,7 @@ export default function ReportsPage() {
             </Grid>
 
             <Grid container spacing={3}>
-                <Grid item xs={12} lg={8}>
+                <Grid size={{ xs: 12, lg: 8 }}>
                     <Paper sx={{ p: 3, height: 450, borderRadius: 2 }}>
                         <Typography variant="h6" gutterBottom fontWeight="bold">Revenue Trend (₦)</Typography>
                         <Box sx={{ height: 350 }}>
@@ -236,7 +236,7 @@ export default function ReportsPage() {
                         </Box>
                     </Paper>
                 </Grid>
-                <Grid item xs={12} lg={4}>
+                <Grid size={{ xs: 12, lg: 4 }}>
                     <Paper sx={{ p: 3, height: 450, borderRadius: 2 }}>
                         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                             <Typography variant="h6" fontWeight="bold">VAT Compliance Audit</Typography>

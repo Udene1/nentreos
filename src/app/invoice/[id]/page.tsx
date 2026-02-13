@@ -100,13 +100,13 @@ export default function PublicInvoicePage() {
                 <Divider sx={{ mb: 4 }} />
 
                 <Grid container spacing={4} sx={{ mb: 4 }}>
-                    <Grid item xs={6}>
+                    <Grid size={{ xs: 6 }}>
                         <Typography variant="caption" fontWeight="bold" color="text.secondary">BILL TO</Typography>
                         <Typography variant="body1" fontWeight="medium">{invoice.client?.name}</Typography>
                         <Typography variant="body2">{invoice.client?.email}</Typography>
                         <Typography variant="body2">{invoice.client?.phone}</Typography>
                     </Grid>
-                    <Grid item xs={6} sx={{ textAlign: 'right' }}>
+                    <Grid size={{ xs: 6 }} sx={{ textAlign: 'right' }}>
                         <Typography variant="caption" fontWeight="bold" color="text.secondary">DUE DATE</Typography>
                         <Typography variant="body1">{formatDate(invoice.due_date)}</Typography>
                         <Typography variant="caption" fontWeight="bold" color="text.secondary" sx={{ mt: 2, display: 'block' }}>STATUS</Typography>

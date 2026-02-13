@@ -124,7 +124,7 @@ export default function DashboardPage() {
                 <Skeleton variant="text" width={300} height={60} sx={{ mb: 4 }} />
                 <Grid container spacing={3}>
                     {[1, 2, 3, 4].map((i) => (
-                        <Grid item xs={12} sm={6} md={3} key={i}>
+                        <Grid size={{ xs: 12, sm: 6, md: 3 }} key={i}>
                             <Skeleton variant="rectangular" height={120} sx={{ borderRadius: 2 }} />
                         </Grid>
                     ))}
@@ -140,7 +140,7 @@ export default function DashboardPage() {
             </Typography>
 
             <Grid container spacing={3} sx={{ mb: 4 }}>
-                <Grid item xs={12}>
+                <Grid size={{ xs: 12 }}>
                     <Paper sx={{ p: 2, bgcolor: 'background.default', border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
                         <Stack direction="row" spacing={2} sx={{ overflowX: 'auto', pb: 1 }}>
                             <Button variant="outlined" startIcon={<Receipt />} href="/sales/new" sx={{ minWidth: 150 }}>
@@ -159,7 +159,7 @@ export default function DashboardPage() {
                     </Paper>
                 </Grid>
 
-                <Grid item xs={12} sm={6} md={3}>
+                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                     <Card sx={{ bgcolor: 'primary.main', color: 'white' }}>
                         <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                             <Inventory fontSize="large" />
@@ -172,7 +172,7 @@ export default function DashboardPage() {
                         </CardContent>
                     </Card>
                 </Grid>
-                <Grid item xs={12} sm={6} md={3}>
+                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                     <Card sx={{ bgcolor: stats.lowStockCount > 0 ? 'warning.main' : 'success.main', color: 'white' }}>
                         <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                             <Warning fontSize="large" />
@@ -183,7 +183,7 @@ export default function DashboardPage() {
                         </CardContent>
                     </Card>
                 </Grid>
-                <Grid item xs={12} sm={6} md={3}>
+                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                     <Card sx={{ bgcolor: 'secondary.main', color: 'white' }}>
                         <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                             <TrendingUp fontSize="large" />
@@ -196,7 +196,7 @@ export default function DashboardPage() {
                         </CardContent>
                     </Card>
                 </Grid>
-                <Grid item xs={12} sm={6} md={3}>
+                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                     <Card sx={{ bgcolor: stats.totalOverdue > 0 ? 'error.main' : 'info.main', color: 'white' }}>
                         <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                             <WalletIcon fontSize="large" />
@@ -212,7 +212,7 @@ export default function DashboardPage() {
             </Grid>
 
             <Grid container spacing={4}>
-                <Grid item xs={12} md={7}>
+                <Grid size={{ xs: 12, md: 7 }}>
                     <Paper sx={{ p: 3, borderRadius: 2 }}>
                         <Typography variant="h6" gutterBottom fontWeight="bold">Recent Sales & Activity</Typography>
                         <List>
@@ -242,7 +242,7 @@ export default function DashboardPage() {
                         </Button>
                     </Paper>
                 </Grid>
-                <Grid item xs={12} md={5}>
+                <Grid size={{ xs: 12, md: 5 }}>
                     <Stack spacing={3}>
                         <AIAdvisor context={{
                             totalSales: stats.todaySales,
