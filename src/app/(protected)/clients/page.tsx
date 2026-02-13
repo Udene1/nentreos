@@ -14,13 +14,11 @@ import {
     GridColDef,
     GridActionsCellItem
 } from '@mui/x-data-grid';
-import {
-    Edit as EditIcon,
-    Delete as DeleteIcon,
-    Add as AddIcon,
-    Refresh as RefreshIcon,
-    WhatsApp as WhatsAppIcon
-} from '@mui/icons-material';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import AddIcon from '@mui/icons-material/Add';
+import RefreshIcon from '@mui/icons-material/Refresh';
+import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import { createClient } from '@/lib/supabase-client';
 import ClientDialog from '@/components/ClientDialog';
 import toast from 'react-hot-toast';

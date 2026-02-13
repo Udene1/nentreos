@@ -13,11 +13,9 @@ import {
     GridColDef,
     GridActionsCellItem
 } from '@mui/x-data-grid';
-import {
-    Add as AddIcon,
-    Refresh as RefreshIcon,
-    Receipt as ReceiptIcon
-} from '@mui/icons-material';
+import AddIcon from '@mui/icons-material/Add';
+import RefreshIcon from '@mui/icons-material/Refresh';
+import ReceiptIcon from '@mui/icons-material/Receipt';
 import { createClient } from '@/lib/supabase-client';
 import { formatCurrency, formatDate } from '@/lib/utils';
 import SaleDialog from '@/components/SaleDialog';

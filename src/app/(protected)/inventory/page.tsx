@@ -15,12 +15,10 @@ import {
     GridColDef,
     GridActionsCellItem
 } from '@mui/x-data-grid';
-import {
-    Edit as EditIcon,
-    Delete as DeleteIcon,
-    Add as AddIcon,
-    Refresh as RefreshIcon
-} from '@mui/icons-material';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import AddIcon from '@mui/icons-material/Add';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import { createClient } from '@/lib/supabase-client';
 import { formatCurrency, formatStock } from '@/lib/utils';
 import ItemDialog from '@/components/ItemDialog';

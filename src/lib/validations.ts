@@ -40,7 +40,7 @@ export const clientSchema = z.object({
     name: z.string().min(1, 'Name is required'),
     email: z.string().email('Invalid email address'),
     phone: z.string().optional(),
-    whatsapp_enabled: z.boolean().default(false),
+    whatsapp_enabled: z.boolean(),
 });
 
 export type ClientFormValues = z.infer<typeof clientSchema>;
@@ -49,7 +49,7 @@ export const invoiceSchema = z.object({
     client_id: z.string().uuid().optional(),
     invoice_number: z.string().min(1, 'Invoice number is required'),
     amount: z.number().positive('Amount must be positive'),
-    currency: z.string().default('NGN'),
+    currency: z.string(),
     due_date: z.string().min(1, 'Due date is required'),
     description: z.string().optional(),
 });

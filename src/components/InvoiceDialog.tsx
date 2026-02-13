@@ -15,7 +15,7 @@ import {
     IconButton,
     Autocomplete
 } from '@mui/material';
-import { Refresh as RefreshIcon } from '@mui/icons-material';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { invoiceSchema, InvoiceFormValues } from '@/lib/validations';

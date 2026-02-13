@@ -15,7 +15,8 @@ import {
     Grid,
     Chip
 } from '@mui/material';
-import { CheckCircle, Payment } from '@mui/icons-material';
+import CheckCircle from '@mui/icons-material/CheckCircle';
+import Payment from '@mui/icons-material/Payment';
 import { createClient } from '@/lib/supabase-client';
 import { formatCurrency, formatDate } from '@/lib/utils';
 

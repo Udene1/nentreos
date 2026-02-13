@@ -17,16 +17,14 @@ import {
     GridActionsCellItem,
     GridValueGetter
 } from '@mui/x-data-grid';
-import {
-    Edit as EditIcon,
-    Delete as DeleteIcon,
-    Add as AddIcon,
-    Refresh as RefreshIcon,
-    Send as SendIcon,
-    SmartToy as AIIcon,
-    ContentCopy as CopyIcon,
-    Link as LinkIcon
-} from '@mui/icons-material';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import AddIcon from '@mui/icons-material/Add';
+import RefreshIcon from '@mui/icons-material/Refresh';
+import SendIcon from '@mui/icons-material/Send';
+import AIIcon from '@mui/icons-material/SmartToy';
+import CopyIcon from '@mui/icons-material/ContentCopy';
+import LinkIcon from '@mui/icons-material/Link';
 import { createClient } from '@/lib/supabase-client';
 import { formatCurrency, formatDate, isOverdue } from '@/lib/utils';
 import InvoiceDialog from '@/components/InvoiceDialog';
