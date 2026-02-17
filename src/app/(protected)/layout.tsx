@@ -38,15 +38,39 @@ import toast from 'react-hot-toast';
 
 const drawerWidth = 240;
 
-const menuItems = [
-    { text: 'Dashboard', icon: <DashboardIcon />, path: '/dashboard' },
-    { text: 'Inventory', icon: <InventoryIcon />, path: '/inventory' },
-    { text: 'Sales', icon: <SalesIcon />, path: '/sales' },
-    { text: 'Purchases', icon: <PurchasesIcon />, path: '/purchases' },
-    { text: 'AI Reminders', icon: <AIIcon />, path: '/reminders' },
-    { text: 'Clients', icon: <ClientsIcon />, path: '/clients' },
-    { text: 'Reports', icon: <ReportsIcon />, path: '/reports' },
-    { text: 'Settings', icon: <SettingsIcon />, path: '/settings' },
+const menuSections = [
+    {
+        title: 'Track-It (Inventory)',
+        gradient: 'var(--track-it-gradient)',
+        items: [
+            { text: 'Dashboard', icon: <DashboardIcon />, path: '/dashboard' },
+            { text: 'Inventory', icon: <InventoryIcon />, path: '/inventory' },
+            { text: 'Sales', icon: <SalesIcon />, path: '/sales' },
+            { text: 'Purchases', icon: <PurchasesIcon />, path: '/purchases' },
+        ]
+    },
+    {
+        title: 'Tax1 (Compliance)',
+        gradient: 'var(--tax1-gradient)',
+        items: [
+            { text: 'Tax Hub', icon: <ReportsIcon />, path: '/tax1' },
+            { text: 'Deductibles', icon: <SalesIcon />, path: '/tax1/deductibles' },
+        ]
+    },
+    {
+        title: 'ChaseAI (Recovery)',
+        gradient: 'var(--chase-gradient)',
+        items: [
+            { text: 'AI Reminders', icon: <AIIcon />, path: '/reminders' },
+            { text: 'Clients', icon: <ClientsIcon />, path: '/clients' },
+        ]
+    },
+    {
+        title: 'System',
+        items: [
+            { text: 'Settings', icon: <SettingsIcon />, path: '/settings' },
+        ]
+    }
 ];
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -56,14 +80,18 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     const router = useRouter();
     const pathname = usePathname();
     const supabase = createClient();
-    const { role, isManager } = useRole();
+    const { role } = useRole();
 
-    const filteredMenuItems = menuItems.filter(item => {
-        if (role === 'staff') {
-            return ['Dashboard', 'Inventory', 'Sales', 'Clients'].includes(item.text);
-        }
-        return true; // manager and owner see everything
-    });
+    // Flatten for role filtering logic if needed, but we'll filter sections
+    const filteredSections = menuSections.map(section => ({
+        ...section,
+        items: section.items.filter(item => {
+            if (role === 'staff') {
+                return ['Dashboard', 'Inventory', 'Sales', 'Clients'].includes(item.text);
+            }
+            return true;
+        })
+    })).filter(section => section.items.length > 0);
 
     useEffect(() => {
         const getUser = async () => {
@@ -95,39 +123,87 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     };
 
     const drawer = (
-        <div>
-            <Toolbar sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', py: 2 }}>
-                <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
-                    Naija OS
+        <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+            <Toolbar sx={{ display: 'flex', alignItems: 'center', px: 3, py: 3 }}>
+                <Typography variant="h5" sx={{
+                    fontWeight: 800,
+                    background: 'var(--suite-gradient)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    fontFamily: 'var(--font-outfit)'
+                }}>
+                    NEntreOS Suite
                 </Typography>
             </Toolbar>
-            <Divider />
-            <List>
-                {filteredMenuItems.map((item) => (
-                    <ListItem key={item.text} disablePadding>
-                        <ListItemButton
-                            selected={pathname.startsWith(item.path)}
-                            onClick={() => router.push(item.path)}
-                            sx={{
-                                '&.Mui-selected': {
-                                    backgroundColor: 'primary.light',
-                                    color: 'primary.contrastText',
-                                    '& .MuiListItemIcon-root': {
-                                        color: 'primary.contrastText',
-                                    },
-                                },
-                                m: 1,
-                                borderRadius: 2,
-                            }}
-                        >
-                            <ListItemIcon>{item.icon}</ListItemIcon>
-                            <ListItemText primary={item.text} />
-                        </ListItemButton>
-                    </ListItem>
+
+            <Box sx={{ flexGrow: 1, overflowY: 'auto', px: 2 }}>
+                {filteredSections.map((section) => (
+                    <Box key={section.title} sx={{ mb: 3 }}>
+                        <Typography variant="caption" sx={{
+                            px: 2,
+                            fontWeight: 700,
+                            color: 'text.secondary',
+                            textTransform: 'uppercase',
+                            letterSpacing: 1,
+                            display: 'block',
+                            mb: 1
+                        }}>
+                            {section.title}
+                        </Typography>
+                        <List disablePadding>
+                            {section.items.map((item) => (
+                                <ListItem key={item.text} disablePadding sx={{ mb: 0.5 }}>
+                                    <ListItemButton
+                                        selected={pathname.startsWith(item.path)}
+                                        onClick={() => router.push(item.path)}
+                                        sx={{
+                                            borderRadius: 3,
+                                            transition: 'all 0.2s',
+                                            '&.Mui-selected': {
+                                                backgroundColor: 'primary.main',
+                                                color: 'primary.contrastText',
+                                                boxShadow: '0 4px 12px rgba(99, 102, 241, 0.2)',
+                                                '& .MuiListItemIcon-root': {
+                                                    color: 'primary.contrastText',
+                                                },
+                                                '&:hover': {
+                                                    backgroundColor: 'primary.dark',
+                                                }
+                                            },
+                                            '&:hover': {
+                                                backgroundColor: 'rgba(99, 102, 241, 0.05)',
+                                                transform: 'translateX(4px)'
+                                            }
+                                        }}
+                                    >
+                                        <ListItemIcon sx={{ minWidth: 40, color: pathname.startsWith(item.path) ? 'inherit' : 'text.secondary' }}>
+                                            {item.icon}
+                                        </ListItemIcon>
+                                        <ListItemText
+                                            primary={item.text}
+                                            primaryTypographyProps={{
+                                                variant: 'body2',
+                                                fontWeight: pathname.startsWith(item.path) ? 700 : 500
+                                            }}
+                                        />
+                                    </ListItemButton>
+                                </ListItem>
+                            ))}
+                        </List>
+                    </Box>
                 ))}
-            </List>
-            <Divider />
-        </div>
+            </Box>
+
+            <Divider sx={{ opacity: 0.5 }} />
+            <Box sx={{ p: 2 }}>
+                <ListItemButton onClick={handleLogout} sx={{ borderRadius: 3, color: 'error.main' }}>
+                    <ListItemIcon sx={{ minWidth: 40, color: 'error.main' }}>
+                        <LogoutIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Logout" primaryTypographyProps={{ variant: 'body2', fontWeight: 600 }} />
+                </ListItemButton>
+            </Box>
+        </Box>
     );
 
     return (
