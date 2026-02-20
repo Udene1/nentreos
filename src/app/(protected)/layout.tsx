@@ -55,8 +55,10 @@ const menuSections = [
         title: 'Tax1 (Compliance)',
         gradient: 'var(--tax1-gradient)',
         items: [
-            { text: 'Tax Hub', icon: <ReportsIcon />, path: '/tax1' },
-            { text: 'Deductibles', icon: <SalesIcon />, path: '/tax1/deductibles' },
+            { text: 'Tax Hub (P&L)', icon: <ReportsIcon />, path: '/tax1' },
+            { text: 'Payroll', icon: <PersonIcon />, path: '/tax1/payroll' },
+            { text: 'Fixed Assets', icon: <InventoryIcon />, path: '/tax1/assets' },
+            { text: 'Expenses', icon: <SalesIcon />, path: '/tax1/deductibles' },
         ]
     },
     {

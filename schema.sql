@@ -178,7 +178,48 @@ CREATE TABLE IF NOT EXISTS public.app_settings (
 );
 
 -- ============================================
--- 7. RLS POLICIES
+-- 7. TAX1 EXTENSIONS (Enterprise Monolith)
+-- ============================================
+
+CREATE TABLE IF NOT EXISTS public.business_expenses (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
+  amount DECIMAL(12, 2) NOT NULL,
+  category TEXT NOT NULL,
+  description TEXT,
+  receipt_url TEXT,
+  expense_date TIMESTAMPTZ DEFAULT NOW(),
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS public.payroll (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
+  employee_name TEXT NOT NULL,
+  gross_salary DECIMAL(12, 2) NOT NULL,
+  paye_tax DECIMAL(12, 2) DEFAULT 0.00,
+  pension DECIMAL(12, 2) DEFAULT 0.00,
+  net_salary DECIMAL(12, 2) NOT NULL,
+  payment_date TIMESTAMPTZ DEFAULT NOW(),
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS public.fixed_assets (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
+  name TEXT NOT NULL,
+  cost DECIMAL(12, 2) NOT NULL,
+  acquisition_date DATE DEFAULT CURRENT_DATE,
+  depreciation_rate DECIMAL(5, 2) DEFAULT 0.00, -- Annual rate in %
+  category TEXT, -- e.g., 'Furniture', 'IT', 'Motor'
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- ============================================
+-- 8. RLS POLICIES
 -- ============================================
 
 ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
@@ -192,6 +233,9 @@ ALTER TABLE public.reminders ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.audit_logs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.app_settings ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.business_expenses ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.payroll ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.fixed_assets ENABLE ROW LEVEL SECURITY;
 
 -- Shared Policy Pattern
 CREATE POLICY "Users can manage their own data" ON public.users FOR ALL USING (auth.uid() = id);
@@ -203,6 +247,9 @@ CREATE POLICY "Users can manage their own clients" ON public.clients FOR ALL USI
 CREATE POLICY "Users can manage their own invoices" ON public.invoices FOR ALL USING (auth.uid() = user_id);
 CREATE POLICY "Users can manage their own app_settings" ON public.app_settings FOR ALL USING (auth.uid() = user_id);
 CREATE POLICY "Users can manage their own notifications" ON public.notifications FOR ALL USING (auth.uid() = user_id);
+CREATE POLICY "Users can manage their own expenses" ON public.business_expenses FOR ALL USING (auth.uid() = user_id);
+CREATE POLICY "Users can manage their own payroll" ON public.payroll FOR ALL USING (auth.uid() = user_id);
+CREATE POLICY "Users can manage their own assets" ON public.fixed_assets FOR ALL USING (auth.uid() = user_id);
 CREATE POLICY "Users can view reminders for own invoices" ON public.reminders FOR SELECT USING (
     invoice_id IN (SELECT id FROM public.invoices WHERE user_id = auth.uid())
 );
@@ -226,6 +273,9 @@ CREATE TRIGGER update_items_updated_at BEFORE UPDATE ON public.items FOR EACH RO
 CREATE TRIGGER update_clients_updated_at BEFORE UPDATE ON public.clients FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
 CREATE TRIGGER update_invoices_updated_at BEFORE UPDATE ON public.invoices FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
 CREATE TRIGGER update_app_settings_updated_at BEFORE UPDATE ON public.app_settings FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
+CREATE TRIGGER update_business_expenses_updated_at BEFORE UPDATE ON public.business_expenses FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
+CREATE TRIGGER update_payroll_updated_at BEFORE UPDATE ON public.payroll FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
+CREATE TRIGGER update_fixed_assets_updated_at BEFORE UPDATE ON public.fixed_assets FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
 
 -- Function to handle new user signup
 CREATE OR REPLACE FUNCTION public.handle_new_user()
@@ -257,7 +307,7 @@ RETURNS TRIGGER AS $$
 BEGIN
     UPDATE items SET quantity = quantity + NEW.quantity_purchased WHERE id = NEW.item_id;
     INSERT INTO stock_batches (item_id, quantity_initial, quantity_remaining, unit_cost, purchase_id, user_id)
-    VALUES (NEW.item_id, NEW.quantity_purchased, NEW.quantity_remaining, NEW.cost / NEW.quantity_purchased, NEW.id, NEW.user_id);
+    VALUES (NEW.item_id, NEW.quantity_purchased, NEW.quantity_purchased, NEW.cost / NEW.quantity_purchased, NEW.id, NEW.user_id);
     RETURN NEW;
 END;
 $$ language 'plpgsql';
