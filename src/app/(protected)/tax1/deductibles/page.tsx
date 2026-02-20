@@ -85,13 +85,13 @@ export default function DeductiblesPage() {
                         {mockDeductibles.map((item) => (
                             <TableRow key={item.id} hover>
                                 <TableCell>{item.date}</TableCell>
-                                <TableCell fontWeight={600}>{item.description}</TableCell>
+                                <TableCell sx={{ fontWeight: 600 }}>{item.description}</TableCell>
                                 <TableCell>
                                     <Box sx={{ px: 1.5, py: 0.5, bgcolor: 'rgba(99, 102, 241, 0.08)', color: 'primary.main', borderRadius: 2, display: 'inline-block', fontSize: '0.75rem', fontWeight: 700 }}>
                                         {item.category}
                                     </Box>
                                 </TableCell>
-                                <TableCell fontWeight={700}>{item.amount}</TableCell>
+                                <TableCell sx={{ fontWeight: 700 }}>{item.amount}</TableCell>
                                 <TableCell>
                                     <Box sx={{
                                         px: 1,

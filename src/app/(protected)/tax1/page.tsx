@@ -29,7 +29,7 @@ export default function TaxHub() {
 
             <Grid container spacing={3} sx={{ mb: 5 }}>
                 {taxStats.map((stat, index) => (
-                    <Grid item xs={12} sm={6} md={3} key={stat.title}>
+                    <Grid size={{ xs: 12, sm: 6, md: 3 }} key={stat.title}>
                         <MotionPaper
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
@@ -51,7 +51,7 @@ export default function TaxHub() {
             </Grid>
 
             <Grid container spacing={4}>
-                <Grid item xs={12} md={8}>
+                <Grid size={{ xs: 12, md: 8 }}>
                     <Paper sx={{ p: 4, borderRadius: 5 }}>
                         <Typography variant="h6" fontWeight="bold" sx={{ mb: 3 }}>Recent Compliance Alerts</Typography>
                         <Stack spacing={2}>
@@ -72,7 +72,7 @@ export default function TaxHub() {
                         </Stack>
                     </Paper>
                 </Grid>
-                <Grid item xs={12} md={4}>
+                <Grid size={{ xs: 12, md: 4 }}>
                     <Box sx={{
                         p: 4,
                         borderRadius: 5,

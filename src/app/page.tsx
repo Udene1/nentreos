@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Button, Container, Typography, Grid, Paper, Stack, useTheme, AlphaAction, Card, CardContent } from '@mui/material';
+import { Box, Button, Container, Typography, Grid, Paper, Stack, useTheme, Card, CardContent } from '@mui/material';
 import {
   TrendingUp,
   Receipt,
@@ -181,7 +181,7 @@ export default function LandingPage() {
 
         <Grid container spacing={4}>
           {suiteApps.map((app, index) => (
-            <Grid key={app.title} item xs={12} sm={6} md={3}>
+            <Grid key={app.title} size={{ xs: 12, sm: 6, md: 3 }}>
               <MotionPaper
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -233,7 +233,7 @@ export default function LandingPage() {
       <Box sx={{ py: 15, bgcolor: 'grey.50' }}>
         <Container maxWidth="lg">
           <Grid container spacing={8} alignItems="center">
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Box sx={{ position: 'relative' }}>
                 <MotionBox
                   initial={{ opacity: 0, scale: 0.8 }}
@@ -277,7 +277,7 @@ export default function LandingPage() {
                 }} />
               </Box>
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Typography variant="h2" gutterBottom>Intelligence <br /> Built for Nigeria.</Typography>
               <Typography variant="h6" color="text.secondary" sx={{ mb: 4 }}>
                 We've combined deep local knowledge with global AI standards. Our suite doesn't just record data—it understands the nuances of the Nigerian market, from VAT compliance to WhatsApp-driven collections.

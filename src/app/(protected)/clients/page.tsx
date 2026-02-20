@@ -14,11 +14,13 @@ import {
     GridColDef,
     GridActionsCellItem
 } from '@mui/x-data-grid';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import AddIcon from '@mui/icons-material/Add';
-import RefreshIcon from '@mui/icons-material/Refresh';
-import WhatsAppIcon from '@mui/icons-material/WhatsApp';
+import {
+    Pencil as EditIcon,
+    Trash2 as DeleteIcon,
+    Plus as AddIcon,
+    RefreshCw as RefreshIcon,
+    MessageCircle as WhatsAppIcon
+} from 'lucide-react';
 import { createClient } from '@/lib/supabase-client';
 import ClientDialog from '@/components/ClientDialog';
 import toast from 'react-hot-toast';

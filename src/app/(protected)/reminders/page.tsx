@@ -17,14 +17,16 @@ import {
     GridActionsCellItem,
     GridValueGetter
 } from '@mui/x-data-grid';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import AddIcon from '@mui/icons-material/Add';
-import RefreshIcon from '@mui/icons-material/Refresh';
-import SendIcon from '@mui/icons-material/Send';
-import AIIcon from '@mui/icons-material/SmartToy';
-import CopyIcon from '@mui/icons-material/ContentCopy';
-import LinkIcon from '@mui/icons-material/Link';
+import {
+    Pencil as EditIcon,
+    Trash2 as DeleteIcon,
+    Plus as AddIcon,
+    RefreshCw as RefreshIcon,
+    Send as SendIcon,
+    Bot as AIIcon,
+    Copy as CopyIcon,
+    Link as LinkIcon
+} from 'lucide-react';
 import { createClient } from '@/lib/supabase-client';
 import { formatCurrency, formatDate, isOverdue } from '@/lib/utils';
 import InvoiceDialog from '@/components/InvoiceDialog';

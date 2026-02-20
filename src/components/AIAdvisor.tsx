@@ -13,12 +13,14 @@ import {
     IconButton,
     Tooltip
 } from '@mui/material';
-import Lightbulb from '@mui/icons-material/Lightbulb';
-import TrendingUp from '@mui/icons-material/TrendingUp';
-import Inventory from '@mui/icons-material/Inventory';
-import AccountBalanceWallet from '@mui/icons-material/AccountBalanceWallet';
-import Refresh from '@mui/icons-material/Refresh';
-import ChevronRight from '@mui/icons-material/ChevronRight';
+import {
+    Lightbulb,
+    TrendingUp,
+    Package as Inventory,
+    Wallet as AccountBalanceWallet,
+    RefreshCw as Refresh,
+    ChevronRight
+} from 'lucide-react';
 import { generateBusinessAdvice } from '@/lib/ai';
 
 interface AIAdvisorProps {
@@ -90,7 +92,7 @@ export default function AIAdvisor({ context }: AIAdvisorProps) {
                 overflow: 'hidden'
             }}>
                 <Box sx={{ position: 'absolute', top: -10, right: -10, opacity: 0.1 }}>
-                    <Lightbulb sx={{ fontSize: 100 }} />
+                    <Lightbulb size={100} />
                 </Box>
 
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>

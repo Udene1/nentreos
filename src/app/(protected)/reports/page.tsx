@@ -18,9 +18,7 @@ import {
     InputLabel,
     Select
 } from '@mui/material';
-import DownloadIcon from '@mui/icons-material/Download';
-import RefreshIcon from '@mui/icons-material/Refresh';
-import TaxIcon from '@mui/icons-material/Assessment';
+import { Download as DownloadIcon, RefreshCw as RefreshIcon, BarChart3 as TaxIcon } from 'lucide-react';
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -145,7 +143,7 @@ export default function ReportsPage() {
         return (
             <Container maxWidth="sm" sx={{ mt: 10, textAlign: 'center' }}>
                 <Paper sx={{ p: 4 }}>
-                    <TaxIcon sx={{ fontSize: 60, color: 'text.disabled', mb: 2 }} />
+                    <TaxIcon size={60} style={{ opacity: 0.3, marginBottom: '16px' }} />
                     <Typography variant="h5" gutterBottom fontWeight="bold">Access Restricted</Typography>
                     <Typography color="text.secondary">
                         Financial analytics and tax reports are only available to Owners and Managers.
@@ -201,7 +199,7 @@ export default function ReportsPage() {
                 <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                     <Paper sx={{ p: 3, borderTop: '4px solid', borderTopColor: 'warning.main', height: '100%', bgcolor: 'warning.light', color: 'warning.contrastText' }}>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
-                            <TaxIcon fontSize="small" />
+                            <TaxIcon size={20} />
                             <Typography variant="body2" fontWeight="bold">Est. Output VAT</Typography>
                         </Box>
                         <Typography variant="h5" fontWeight="bold">{formatCurrency(outputVAT)}</Typography>
@@ -241,7 +239,7 @@ export default function ReportsPage() {
                     <Paper sx={{ p: 3, height: 450, borderRadius: 2 }}>
                         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                             <Typography variant="h6" fontWeight="bold">VAT Compliance Audit</Typography>
-                            <TaxIcon color="disabled" />
+                            <TaxIcon size={24} style={{ opacity: 0.5 }} />
                         </Box>
                         <Divider sx={{ mb: 2 }} />
                         <Stack spacing={2}>

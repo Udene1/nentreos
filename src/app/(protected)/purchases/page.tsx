@@ -12,8 +12,7 @@ import {
     DataGrid,
     GridColDef,
 } from '@mui/x-data-grid';
-import AddIcon from '@mui/icons-material/Add';
-import RefreshIcon from '@mui/icons-material/Refresh';
+import { Plus as AddIcon, RefreshCw as RefreshIcon } from 'lucide-react';
 import { createClient } from '@/lib/supabase-client';
 import { formatCurrency, formatDate } from '@/lib/utils';
 import PurchaseDialog from '@/components/PurchaseDialog';

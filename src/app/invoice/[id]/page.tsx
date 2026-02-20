@@ -15,8 +15,7 @@ import {
     Grid,
     Chip
 } from '@mui/material';
-import CheckCircle from '@mui/icons-material/CheckCircle';
-import Payment from '@mui/icons-material/Payment';
+import { CheckCircle, CreditCard as Payment } from 'lucide-react';
 import { createClient } from '@/lib/supabase-client';
 import { formatCurrency, formatDate } from '@/lib/utils';
 
@@ -150,7 +149,7 @@ export default function PublicInvoicePage() {
                     </Stack>
                 ) : (
                     <Box sx={{ textAlign: 'center', color: 'success.main' }}>
-                        <CheckCircle sx={{ fontSize: 60, mb: 1 }} />
+                        <CheckCircle size={60} style={{ marginBottom: '8px' }} />
                         <Typography variant="h5" fontWeight="bold">Payment Successful</Typography>
                         <Typography>Thank you for your business!</Typography>
                     </Box>

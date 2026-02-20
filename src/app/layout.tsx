@@ -16,11 +16,14 @@ import MUIProvider from "@/components/MUIProvider";
 import SWRegistration from "@/components/SWRegistration";
 import { Toaster } from "react-hot-toast";
 
+export const viewport = {
+  themeColor: "#1e3a8a",
+};
+
 export const metadata: Metadata = {
   title: "NEntreOS - Nigerian Entrepreneurship Operating System",
   description: "Advanced inventory, AI payment chasers, and tax compliance for Nigerian SMEs",
   manifest: "/manifest.json",
-  themeColor: "#1e3a8a",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
