@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase-server';
-import { generatePLStatement } from '@/lib/tax-utils';
+import { generatePLStatement } from '@/lib/tax-server-utils';
 
 export async function GET(request: NextRequest) {
     const supabase = await createClient();
