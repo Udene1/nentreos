@@ -19,14 +19,13 @@ export function useRole() {
             }
 
             const { data, error } = await supabase
-                .from('users')
-                .select('settings')
-                .eq('id', user.id)
+                .from('app_settings')
+                .select('role')
+                .eq('user_id', user.id)
                 .single();
 
             if (data && !error) {
-                const settings = data.settings as any;
-                setRole(settings?.role || 'owner'); // Default to owner if not set
+                setRole((data.role as UserRole) || 'owner');
             }
             setLoading(false);
         };
