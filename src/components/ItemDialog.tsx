@@ -17,6 +17,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { itemSchema, ItemFormValues } from '@/lib/validations';
 import { createClient } from '@/lib/supabase-client';
 import toast from 'react-hot-toast';
+import { nexus } from '@/lib/nexus';
 import BarcodeScanner from '@/components/BarcodeScanner';
 import { Scan as ScanIcon } from 'lucide-react';
 
@@ -71,7 +72,7 @@ export default function ItemDialog({ open, onClose, item, onSuccess }: ItemDialo
                 if (!user) return;
 
                 const { data } = await supabase
-                    .from('settings')
+                    .from('app_settings')
                     .select('barcode_enabled')
                     .eq('user_id', user.id)
                     .single();
@@ -99,15 +100,28 @@ export default function ItemDialog({ open, onClose, item, onSuccess }: ItemDialo
                     })
                     .eq('id', item.id);
                 if (error) throw error;
+
+                // Nexus Integration (Phase 3: Inventory Sync)
+                await nexus.trackInventory(item.id, values.quantity - item.quantity, 'Item update');
+
                 toast.success('Item updated successfully');
             } else {
-                const { error } = await supabase
+                const { data, error } = await supabase
                     .from('items')
                     .insert([{
                         ...values,
                         user_id: user.id,
-                    }]);
+                    }])
+                    .select()
+                    .single();
+
                 if (error) throw error;
+
+                // Nexus Integration (Phase 3: Inventory Sync)
+                if (data) {
+                    await nexus.trackInventory(data.id, values.quantity, 'Initial stock');
+                }
+
                 toast.success('Item added successfully');
             }
             reset();

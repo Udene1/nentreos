@@ -27,6 +27,7 @@ import { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase-client';
 import { formatCurrency, formatDate } from '@/lib/utils';
 import toast from 'react-hot-toast';
+import { nexus } from '@/lib/nexus';
 
 const categories = [
     'Office Supplies',
@@ -79,6 +80,14 @@ export default function DeductiblesPage() {
         if (error) {
             toast.error('Failed to save expense');
         } else {
+            // Nexus Integration (Phase 4: Tax1 Sync)
+            await nexus.recordTransaction('expense', {
+                category: newExpense.category,
+                description: newExpense.description,
+                amount: newExpense.amount,
+                date: newExpense.expense_date
+            });
+
             toast.success('Expense recorded for tax deduction');
             setOpen(false);
             setNewExpense({

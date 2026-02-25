@@ -25,6 +25,7 @@ import { formatStock } from '@/lib/utils';
 import { calculateNewWeightedAverage } from '@/lib/valuation';
 import toast from 'react-hot-toast';
 import { useState, useEffect } from 'react';
+import { nexus } from '@/lib/nexus';
 
 interface PurchaseDialogProps {
     open: boolean;
@@ -119,6 +120,17 @@ export default function PurchaseDialog({ open, onClose, onSuccess }: PurchaseDia
                 }]);
 
             if (error) throw error;
+
+            // Nexus Integration (Phase 1: Auditing)
+            await nexus.recordTransaction('purchase', {
+                item_id: values.item_id,
+                quantity: values.quantity_purchased,
+                cost: values.cost,
+                purchase_id: (error as any) ? null : 'recorded' // Placeholder for actual ID if needed
+            });
+
+            // Nexus Integration (Phase 3: Inventory Sync)
+            await nexus.trackInventory(values.item_id, values.quantity_purchased, 'Purchase');
 
             toast.success('Purchase logged and stock updated');
             reset();

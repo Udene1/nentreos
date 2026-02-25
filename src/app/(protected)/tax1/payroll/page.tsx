@@ -26,6 +26,7 @@ import { createClient } from '@/lib/supabase-client';
 import { formatCurrency } from '@/lib/utils';
 import { calculateNigerianPAYE } from '@/lib/tax-utils';
 import toast from 'react-hot-toast';
+import { nexus } from '@/lib/nexus';
 
 export default function PayrollPage() {
     const [payroll, setPayroll] = useState<any[]>([]);
@@ -76,6 +77,15 @@ export default function PayrollPage() {
         if (error) {
             toast.error('Failed to save payroll entry');
         } else {
+            // Nexus Integration (Phase 4: Tax1 Sync)
+            await nexus.recordTransaction('expense', {
+                type: 'payroll',
+                employee: newEntry.employee_name,
+                gross: gross,
+                paye: paye,
+                net: net
+            });
+
             toast.success('Payroll entry added');
             setOpen(false);
             fetchPayroll();

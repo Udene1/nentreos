@@ -26,6 +26,7 @@ import { createClient } from '@/lib/supabase-client';
 import { formatCurrency } from '@/lib/utils';
 import { calculateDepreciation } from '@/lib/tax-utils';
 import toast from 'react-hot-toast';
+import { nexus } from '@/lib/nexus';
 
 export default function AssetsPage() {
     const [assets, setAssets] = useState<any[]>([]);
@@ -62,6 +63,14 @@ export default function AssetsPage() {
         if (error) {
             toast.error('Failed to save asset');
         } else {
+            // Nexus Integration (Phase 4: Tax1 Sync)
+            await nexus.recordTransaction('expense', {
+                type: 'fixed_asset',
+                name: newAsset.name,
+                cost: newAsset.cost,
+                category: newAsset.category
+            });
+
             toast.success('Asset tracked successfully');
             setOpen(false);
             fetchAssets();

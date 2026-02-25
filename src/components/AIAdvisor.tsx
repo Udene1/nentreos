@@ -22,6 +22,7 @@ import {
     ChevronRight
 } from 'lucide-react';
 import { generateBusinessAdvice } from '@/lib/ai';
+import { nexus } from '@/lib/nexus';
 
 interface AIAdvisorProps {
     context: {
@@ -39,6 +40,9 @@ export default function AIAdvisor({ context }: AIAdvisorProps) {
     const fetchAdvice = async () => {
         setLoading(true);
         try {
+            // Nexus Integration (Phase 2: Secure Insight Handshake)
+            await nexus.getIntelligence('business_insights', context);
+
             const res = await generateBusinessAdvice(context);
             setAdvice(res);
         } catch (e) {

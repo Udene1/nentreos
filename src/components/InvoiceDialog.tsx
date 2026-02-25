@@ -22,6 +22,7 @@ import { invoiceSchema, InvoiceFormValues } from '@/lib/validations';
 import { createClient } from '@/lib/supabase-client';
 import { generateInvoiceNumber } from '@/lib/utils';
 import toast from 'react-hot-toast';
+import { nexus } from '@/lib/nexus';
 
 interface InvoiceDialogProps {
     open: boolean;
@@ -118,14 +119,27 @@ export default function InvoiceDialog({ open, onClose, invoice, onSuccess }: Inv
                     .update(payload)
                     .eq('id', invoice.id);
                 if (error) throw error;
-                toast.success('Invoice updated');
             } else {
                 const { error } = await supabase
                     .from('invoices')
                     .insert([payload]);
                 if (error) throw error;
-                toast.success('Invoice created');
             }
+
+            // Nexus Integration (Phase 1: Auditing)
+            await nexus.recordTransaction('sale', {
+                invoice_number: values.invoice_number,
+                amount: values.amount,
+                clientId: values.client_id,
+                action: invoice ? 'update' : 'create'
+            });
+
+            // Nexus Integration (Phase 3: Inventory Sync - Placeholder)
+            // In a real sale, we would loop through items. 
+            // For now, we log the sale event to Track-It as a generic 'sale' update
+            await nexus.trackInventory('multiple', 0, `Invoice ${values.invoice_number}`);
+
+            toast.success(invoice ? 'Invoice updated' : 'Invoice created');
             reset();
             onSuccess();
             onClose();

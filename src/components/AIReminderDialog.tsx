@@ -21,6 +21,7 @@ import { Bot as AIIcon, Send as SendIcon } from 'lucide-react';
 import { generateReminder } from '@/lib/ai';
 import { createClient } from '@/lib/supabase-client';
 import toast from 'react-hot-toast';
+import { nexus } from '@/lib/nexus';
 
 interface AIReminderDialogProps {
     open: boolean;
@@ -38,6 +39,9 @@ export default function AIReminderDialog({ open, onClose, invoice }: AIReminderD
     const handleGenerate = async () => {
         setLoading(true);
         try {
+            // Nexus Integration (Phase 2: Routed Intelligence)
+            await nexus.getIntelligence('invoice_chasing', { invoiceId: invoice.id });
+
             const result = await generateReminder(invoice, invoice.client, level as any);
             setGenerated(result);
         } catch (error: any) {

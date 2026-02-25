@@ -42,7 +42,7 @@ export default function SettingsPage() {
             if (!user) return;
 
             const { data, error } = await supabase
-                .from('settings')
+                .from('app_settings')
                 .select('*')
                 .eq('user_id', user.id)
                 .single();
@@ -72,7 +72,7 @@ export default function SettingsPage() {
             if (!user) throw new Error('Not authenticated');
 
             const { error } = await supabase
-                .from('settings')
+                .from('app_settings')
                 .upsert({
                     user_id: user.id,
                     valuation_method: valuationMethod,

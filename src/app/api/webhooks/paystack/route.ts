@@ -59,7 +59,7 @@ export async function POST(req: Request) {
 
         for (const item of items) {
             // 3. Consume stock batches (using existing RPC)
-            const { data: totalCost, error: cogsError } = await supabase.rpc('consume_stock_batches', {
+            const { data: totalCost, error: cogsError } = await supabase.rpc('consume_stock_batch', {
                 p_item_id: item.item_id,
                 p_quantity_to_sell: item.quantity,
                 p_user_id: userId

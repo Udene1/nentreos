@@ -53,7 +53,7 @@ export default function SaleDialog({ open, onClose, onSuccess }: SaleDialogProps
                 if (!user) return;
 
                 const { data } = await supabase
-                    .from('settings')
+                    .from('app_settings')
                     .select('barcode_enabled')
                     .eq('user_id', user.id)
                     .single();
@@ -126,7 +126,7 @@ export default function SaleDialog({ open, onClose, onSuccess }: SaleDialogProps
 
             // 1. Get user valuation preference
             const { data: settings } = await supabase
-                .from('settings')
+                .from('app_settings')
                 .select('valuation_method')
                 .eq('user_id', user.id)
                 .single();
@@ -134,7 +134,7 @@ export default function SaleDialog({ open, onClose, onSuccess }: SaleDialogProps
             const activeMethod = settings?.valuation_method || 'FIFO';
 
             // 2. Consume batches and calculate COGS (needed for both methods to keep batches synced)
-            const { data: totalCost, error: cogsError } = await supabase.rpc('consume_stock_batches', {
+            const { data: totalCost, error: cogsError } = await supabase.rpc('consume_stock_batch', {
                 p_item_id: values.item_id,
                 p_quantity_to_sell: values.quantity_sold,
                 p_user_id: user.id

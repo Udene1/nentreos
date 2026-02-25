@@ -170,9 +170,12 @@ CREATE TABLE IF NOT EXISTS public.audit_logs (
 CREATE TABLE IF NOT EXISTS public.app_settings (
   user_id UUID PRIMARY KEY REFERENCES public.users(id) ON DELETE CASCADE,
   valuation_method TEXT DEFAULT 'FIFO' CHECK (valuation_method IN ('FIFO', 'WAC')),
-  tax_rate DECIMAL(4, 2) DEFAULT 7.50, -- Standard Nigerian VAT
-  company_name TEXT,
-  company_address TEXT,
+  barcode_enabled BOOLEAN DEFAULT TRUE,
+  business_name TEXT,
+  tin TEXT,
+  address TEXT,
+  vat_rate DECIMAL(4, 2) DEFAULT 7.50,
+  role TEXT DEFAULT 'owner',
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -301,18 +304,87 @@ CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
 
--- Trigger for purchases: update items quantity
+-- Trigger for purchases: update items quantity and weighted average cost
 CREATE OR REPLACE FUNCTION handle_purchase_stock()
 RETURNS TRIGGER AS $$
+DECLARE
+    v_total_qty INTEGER;
+    v_old_qty INTEGER;
+    v_old_wac DECIMAL(12,2);
+    v_new_unit_cost DECIMAL(12,2);
 BEGIN
-    UPDATE items SET quantity = quantity + NEW.quantity_purchased WHERE id = NEW.item_id;
+    -- 1. Calculate new WAC before updating quantity
+    SELECT quantity, weighted_avg_cost INTO v_old_qty, v_old_wac 
+    FROM items WHERE id = NEW.item_id;
+    
+    v_new_unit_cost := NEW.cost / NEW.quantity_purchased;
+    v_total_qty := v_old_qty + NEW.quantity_purchased;
+    
+    -- Recalculate WAC: ((old_qty * old_wac) + (new_qty * new_cost)) / total_qty
+    IF v_total_qty > 0 THEN
+        UPDATE items 
+        SET 
+            quantity = v_total_qty,
+            weighted_avg_cost = ((v_old_qty * v_old_wac) + (NEW.quantity_purchased * v_new_unit_cost)) / v_total_qty
+        WHERE id = NEW.item_id;
+    ELSE
+        UPDATE items SET quantity = v_total_qty WHERE id = NEW.item_id;
+    END IF;
+
+    -- 2. Insert into stock_batches for FIFO
     INSERT INTO stock_batches (item_id, quantity_initial, quantity_remaining, unit_cost, purchase_id, user_id)
-    VALUES (NEW.item_id, NEW.quantity_purchased, NEW.quantity_purchased, NEW.cost / NEW.quantity_purchased, NEW.id, NEW.user_id);
+    VALUES (NEW.item_id, NEW.quantity_purchased, NEW.quantity_purchased, v_new_unit_cost, NEW.id, NEW.user_id);
+    
     RETURN NEW;
 END;
 $$ language 'plpgsql';
 
 CREATE TRIGGER purchase_stock_trigger AFTER INSERT ON purchases FOR EACH ROW EXECUTE PROCEDURE handle_purchase_stock();
+
+-- Function for FIFO Stock Consumption (COGS Calculation)
+CREATE OR REPLACE FUNCTION consume_stock_batches(
+    p_item_id UUID,
+    p_quantity_to_sell INTEGER,
+    p_user_id UUID
+)
+RETURNS NUMERIC AS $$
+DECLARE
+    v_remaining_to_consume INTEGER := p_quantity_to_sell;
+    v_total_cost NUMERIC := 0;
+    v_batch RECORD;
+    v_consume_qty INTEGER;
+BEGIN
+    FOR v_batch IN 
+        SELECT id, quantity_remaining, unit_cost 
+        FROM stock_batches 
+        WHERE item_id = p_item_id AND user_id = p_user_id AND quantity_remaining > 0
+        ORDER BY created_at ASC -- FIFO logic
+    LOOP
+        IF v_remaining_to_consume <= 0 THEN
+            EXIT;
+        END IF;
+
+        v_consume_qty := LEAST(v_batch.quantity_remaining, v_remaining_to_consume);
+        
+        -- Update the batch
+        UPDATE stock_batches 
+        SET quantity_remaining = quantity_remaining - v_consume_qty
+        WHERE id = v_batch.id;
+
+        -- Add to total cost
+        v_total_cost := v_total_cost + (v_consume_qty * v_batch.unit_cost);
+        
+        -- Update remaining to consume
+        v_remaining_to_consume := v_remaining_to_consume - v_consume_qty;
+    END LOOP;
+
+    IF v_remaining_to_consume > 0 THEN
+        RAISE EXCEPTION 'Not enough stock in batches for FIFO calculation';
+    END IF;
+
+    RETURN v_total_cost;
+END;
+$$ LANGUAGE plpgsql;
 
 -- Trigger for sales: update items quantity
 CREATE OR REPLACE FUNCTION handle_sale_stock()
@@ -324,3 +396,26 @@ END;
 $$ language 'plpgsql';
 
 CREATE TRIGGER sale_stock_trigger AFTER INSERT ON sales FOR EACH ROW EXECUTE PROCEDURE handle_sale_stock();
+
+-- Nexus Integration Audit Table
+CREATE TABLE IF NOT EXISTS public.audit_integration (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
+  provider TEXT NOT NULL,
+  action TEXT NOT NULL,
+  payload JSONB,
+  status TEXT NOT NULL,
+  error_message TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- RLS for audit_integration
+ALTER TABLE public.audit_integration ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can view their own integration logs"
+  ON public.audit_integration FOR SELECT
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert their own integration logs"
+  ON public.audit_integration FOR INSERT
+  WITH CHECK (auth.uid() = user_id);
